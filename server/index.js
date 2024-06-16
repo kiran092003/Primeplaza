@@ -16,6 +16,10 @@ app.use("/api/v1",LoginRouter);
 app.use("/api/v1",FashionRouter);
 
 
+app.get("/",(req,res)=>{
+    res.send("hello")
+})
+
 const start = async()=>{
     try {
         await ConnectDB(process.env.MONGO_URI);
