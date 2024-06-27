@@ -1,7 +1,9 @@
 import axios from "axios";
 import Product from "../elements/product";
 
-const API_URL="http://localhost:8000/api/v1";
+// const API_URL="http://localhost:8000/api/v1";
+const API_URL="https://primeplaza.onrender.com/api/v1";
+
 
 export const login = async(data)=>{
     try {
