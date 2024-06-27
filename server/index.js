@@ -20,12 +20,12 @@ app.use("/api/v1",CartRouter);
 app.get("/",(req,res)=>{
     res.send("hello")
 })
-
+const port = process.env.PORT || 8000;
 const start = async()=>{
     try {
         await ConnectDB(process.env.MONGO_URI);
         console.log("db-connected");
-        app.listen(8000,(req,res)=>{
+        app.listen(port,(req,res)=>{
             console.log("server is listening at port 8000.");
         })
     } catch (error) {
