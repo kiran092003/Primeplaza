@@ -4,14 +4,14 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { FaRegStar } from "react-icons/fa6";
 import { useState,useEffect } from "react";
-import {menproducts,getFilteredData,getPriceFilteredData,getcolorFilteredData,getsortFilteredData,
-userinfo} from "../services/api";
+import {kidsproducts,getKidsFilteredData,getKidsPriceFilteredData,getKidscolorFilteredData,getKidssortFilteredData,userinfo} from "../services/api";
 import Product from "../elements/product";
 import { FaEarlybirds } from "react-icons/fa6";
 import { CgSpinnerTwoAlt } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 
-function Men(){
+
+function Kids(){
 
     const [isLoading, setIsLoading] = useState(false);
     const [productsData, setUserData] = useState([]);
@@ -22,17 +22,15 @@ function Men(){
     const [Loading, setLoading] = useState(false);
     const [sortdropdown,setdortdropdown]=useState(false);
     const [selectedsort,setselectedsort]=useState("");
+    const navigate = useNavigate();
     const [userinfoo, setUserinfoo] = useState(null);
-    const [userId,setuserId]=useState("");
     const [isLogin, setIsLogin] = useState(false);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-        const fetchMenInfo = async () => {
+        const fetchKidsInfo = async () => {
             try { 
                 setIsLoading(true);
-                const data = await menproducts();
+                const data = await kidsproducts();
                 setUserData(data.products);
             } catch (error) {
                 console.log(error);
@@ -41,27 +39,13 @@ function Men(){
                 setIsLoading(false);
             }
         };
-        fetchMenInfo();
-      }, []);
-
-      useEffect(() => {
-        const fetchUserInfo = async () => {
-          try {
-            const data = await userinfo();
-            setUserinfoo(data);
-            setuserId(data.user.userId);
-            setIsLogin(true);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-        fetchUserInfo();
+        fetchKidsInfo();
       }, []);
 
       const fetchdata = async () => {
         try { 
             setIsLoading(true);
-            const data = await menproducts();
+            const data = await kidsproducts();
             setUserData(data.products);
         } catch (error) {
             console.log(error);
@@ -70,6 +54,28 @@ function Men(){
             setIsLoading(false);
         }
       }
+
+      useEffect(() => {
+        const fetchUserInfo = async () => {
+          try {
+            const data = await userinfo();
+            setUserinfoo(data.user);
+            setIsLogin(true);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        fetchUserInfo();
+      }, []);
+
+      const handleChange = async (id) => {
+        if(isLogin){
+            navigate(`/card/${id}`);   
+        }
+        else{
+            navigate(`/userlogin`)
+        }
+        };
 
       const handleCheckbox =async (event) => {
         const isChecked = event.target.checked;
@@ -106,7 +112,7 @@ function Men(){
         try {
             setLoading(true)
             const pricestring=`${minval}-${maxval}`;
-            const filteredData = await getPriceFilteredData(pricestring);
+            const filteredData = await getKidsPriceFilteredData(pricestring);
             setUserData(filteredData.products); 
         } catch (error) {
             console.log(error);
@@ -116,18 +122,9 @@ function Men(){
         } 
       }
 
-      const handleChange = async (id) => {
-        if(isLogin){
-            navigate(`/card/${id}`);   
-        }
-        else{
-            navigate(`/userlogin`)
-        }
-        };
-
       useEffect(()=>{
         const demo = async ()=>{
-                const filteredData= await getsortFilteredData(selectedsort);
+                const filteredData= await getKidssortFilteredData(selectedsort);
                 setUserData(filteredData.products);  
         }
         demo()
@@ -135,7 +132,7 @@ function Men(){
 
       useEffect(()=>{
         const demo = async ()=>{
-                const filteredData= await getFilteredData(selectedCategories);
+                const filteredData= await getKidsFilteredData(selectedCategories);
                 setUserData(filteredData.products);  
         }
         demo()
@@ -143,7 +140,7 @@ function Men(){
 
       useEffect(()=>{
         const demo = async ()=>{
-                const filteredData= await getcolorFilteredData(selectedColor);
+                const filteredData= await getKidscolorFilteredData(selectedColor);
                 setUserData(filteredData.products);  
         }
         demo()
@@ -213,16 +210,16 @@ function Men(){
                                 <span className="pl-2 text-xs font-medium text-txt">JACKETS</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Wallet"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">WALLETS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Dresses"  onChange={handleCheckbox}/>
+                                <span className="pl-2 text-xs font-medium text-txt">DRESSES</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Belts"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">BELTS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Tops"  onChange={handleCheckbox}/>
+                                <span className="pl-2 text-xs font-medium text-txt">TOPS</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Shoes"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">SHOESS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Kurta"  onChange={handleCheckbox}/>
+                                <span className="pl-2 text-xs font-medium text-txt">KURTA</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
                                 <input type="checkbox" className="h-3 w-3 rounded-xl" value="T-shirt"  onChange={handleCheckbox}/>
@@ -281,8 +278,12 @@ function Men(){
                                 <span className="pl-2 text-xs font-medium text-txt">GREY</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Brown"  onChange={handleColor}/>
-                                <span className="pl-2 text-xs font-medium text-txt">BROWN</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Yellow"  onChange={handleColor}/>
+                                <span className="pl-2 text-xs font-medium text-txt">YELLOW</span>
+                            </div>
+                            <div className="flex items-center p-2 pt-1">
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Pink"  onChange={handleColor}/>
+                                <span className="pl-2 text-xs font-medium text-txt">PINK</span>
                             </div>
                         </div>
                     </div>
@@ -308,4 +309,4 @@ function Men(){
     );
 }
 
-export default Men;
+export default Kids;

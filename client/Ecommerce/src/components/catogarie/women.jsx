@@ -4,14 +4,13 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { FaRegStar } from "react-icons/fa6";
 import { useState,useEffect } from "react";
-import {menproducts,getFilteredData,getPriceFilteredData,getcolorFilteredData,getsortFilteredData,
-userinfo} from "../services/api";
+import {womenproducts,getWomenFilteredData,getWomenPriceFilteredData,getWomencolorFilteredData,getWomensortFilteredData,userinfo} from "../services/api";
 import Product from "../elements/product";
 import { FaEarlybirds } from "react-icons/fa6";
 import { CgSpinnerTwoAlt } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 
-function Men(){
+function Women(){
 
     const [isLoading, setIsLoading] = useState(false);
     const [productsData, setUserData] = useState([]);
@@ -22,17 +21,15 @@ function Men(){
     const [Loading, setLoading] = useState(false);
     const [sortdropdown,setdortdropdown]=useState(false);
     const [selectedsort,setselectedsort]=useState("");
+    const navigate = useNavigate();
     const [userinfoo, setUserinfoo] = useState(null);
-    const [userId,setuserId]=useState("");
     const [isLogin, setIsLogin] = useState(false);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-        const fetchMenInfo = async () => {
+        const fetchWomenInfo = async () => {
             try { 
                 setIsLoading(true);
-                const data = await menproducts();
+                const data = await womenproducts();
                 setUserData(data.products);
             } catch (error) {
                 console.log(error);
@@ -41,27 +38,13 @@ function Men(){
                 setIsLoading(false);
             }
         };
-        fetchMenInfo();
-      }, []);
-
-      useEffect(() => {
-        const fetchUserInfo = async () => {
-          try {
-            const data = await userinfo();
-            setUserinfoo(data);
-            setuserId(data.user.userId);
-            setIsLogin(true);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-        fetchUserInfo();
+        fetchWomenInfo();
       }, []);
 
       const fetchdata = async () => {
         try { 
             setIsLoading(true);
-            const data = await menproducts();
+            const data = await womenproducts();
             setUserData(data.products);
         } catch (error) {
             console.log(error);
@@ -70,6 +53,28 @@ function Men(){
             setIsLoading(false);
         }
       }
+
+      useEffect(() => {
+        const fetchUserInfo = async () => {
+          try {
+            const data = await userinfo();
+            setUserinfoo(data.user);
+            setIsLogin(true);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        fetchUserInfo();
+      }, []);
+
+      const handleChange = async (id) => {
+        if(isLogin){
+            navigate(`/card/${id}`);   
+        }
+        else{
+            navigate(`/userlogin`)
+        }
+        };
 
       const handleCheckbox =async (event) => {
         const isChecked = event.target.checked;
@@ -106,7 +111,7 @@ function Men(){
         try {
             setLoading(true)
             const pricestring=`${minval}-${maxval}`;
-            const filteredData = await getPriceFilteredData(pricestring);
+            const filteredData = await getWomenPriceFilteredData(pricestring);
             setUserData(filteredData.products); 
         } catch (error) {
             console.log(error);
@@ -116,26 +121,17 @@ function Men(){
         } 
       }
 
-      const handleChange = async (id) => {
-        if(isLogin){
-            navigate(`/card/${id}`);   
-        }
-        else{
-            navigate(`/userlogin`)
-        }
-        };
-
       useEffect(()=>{
         const demo = async ()=>{
-                const filteredData= await getsortFilteredData(selectedsort);
-                setUserData(filteredData.products);  
+                const filteredData= await getWomensortFilteredData(selectedsort);
+                setUserData(filteredData.products); 
         }
         demo()
       },[selectedsort])
 
       useEffect(()=>{
         const demo = async ()=>{
-                const filteredData= await getFilteredData(selectedCategories);
+                const filteredData= await getWomenFilteredData(selectedCategories);
                 setUserData(filteredData.products);  
         }
         demo()
@@ -143,9 +139,9 @@ function Men(){
 
       useEffect(()=>{
         const demo = async ()=>{
-                const filteredData= await getcolorFilteredData(selectedColor);
+                const filteredData= await getWomencolorFilteredData(selectedColor);
                 setUserData(filteredData.products);  
-        }
+            }
         demo()
       },[selectedColor])
 
@@ -163,7 +159,7 @@ function Men(){
             <Navbar/>
             <div>
                 <div className="h-16 w-[97vw] pt-3 ml-5">
-                    <span className="font-bold text-txt text-xl">Men's Clothing & Accessories</span>
+                    <span className="font-bold text-txt text-xl">Women's Clothing & Accessories</span>
                 </div>
                 <div className="h-16 w-[97vw] pt-3 ml-5 border-b-2 flex justify-between">
                     <div className="pt-3 pl-1">
@@ -201,32 +197,28 @@ function Men(){
                         <div className="flex flex-col border-b-2 pb-3 pt-2">
                             <span className=" text-sm font-medium text-txt pl-1">SUBCATEGORY</span>
                             <div className="flex items-center p-2 pt-3">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Shirt"  onChange={handleCheckbox} />
-                                <span className="pl-2 text-xs font-medium text-txt ">SHIRTS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Dresses"  onChange={handleCheckbox} />
+                                <span className="pl-2 text-xs font-medium text-txt ">DRESSES</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
                                 <input type="checkbox" className="h-3 w-3 rounded-xl" value="Pant"  onChange={handleCheckbox}/>
                                 <span className="pl-2 text-xs font-medium text-txt">PANTS</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Jackets"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">JACKETS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Handbag"  onChange={handleCheckbox}/>
+                                <span className="pl-2 text-xs font-medium text-txt">HANDBAGS</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Wallet"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">WALLETS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Saree"  onChange={handleCheckbox}/>
+                                <span className="pl-2 text-xs font-medium text-txt">SAREES</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Belts"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">BELTS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Tops"  onChange={handleCheckbox}/>
+                                <span className="pl-2 text-xs font-medium text-txt">TOPS</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Shoes"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">SHOESS</span>
-                            </div>
-                            <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="T-shirt"  onChange={handleCheckbox}/>
-                                <span className="pl-2 text-xs font-medium text-txt">T-SHIRTS</span>
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Footware"  onChange={handleCheckbox}/>
+                                <span className="pl-2 text-xs font-medium text-txt">FOOTWARE</span>
                             </div>
                         </div>
                         <div className="flex flex-col border-b-2 pb-3 pt-3">
@@ -277,12 +269,20 @@ function Men(){
                                 <span className="pl-2 text-xs font-medium text-txt">BLACK</span>
                             </div>
                             <div className="flex items-center p-2 pt-1">
-                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Grey"  onChange={handleColor}/>
-                                <span className="pl-2 text-xs font-medium text-txt">GREY</span>
-                            </div>
-                            <div className="flex items-center p-2 pt-1">
                                 <input type="checkbox" className="h-3 w-3 rounded-xl" value="Brown"  onChange={handleColor}/>
                                 <span className="pl-2 text-xs font-medium text-txt">BROWN</span>
+                            </div>
+                            <div className="flex items-center p-2 pt-1">
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Red"  onChange={handleColor}/>
+                                <span className="pl-2 text-xs font-medium text-txt">RED</span>
+                            </div>
+                            <div className="flex items-center p-2 pt-1">
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Pink"  onChange={handleColor}/>
+                                <span className="pl-2 text-xs font-medium text-txt">PINK</span>
+                            </div>
+                            <div className="flex items-center p-2 pt-1">
+                                <input type="checkbox" className="h-3 w-3 rounded-xl" value="Green"  onChange={handleColor}/>
+                                <span className="pl-2 text-xs font-medium text-txt">GREEN</span>
                             </div>
                         </div>
                     </div>
@@ -308,4 +308,4 @@ function Men(){
     );
 }
 
-export default Men;
+export default Women;

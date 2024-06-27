@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import {userinfo} from "../services/api";
+import {userinfo,getproductidbyName} from "../services/api";
 import { GoBell } from "react-icons/go";
 import { CiUser } from "react-icons/ci";
 import { MdLogout } from "react-icons/md";
 import CategoriesDropdown from "./CategoriesDropdown";
+import {useParams,useNavigate} from "react-router-dom";
 
 
 function Navbar(){
@@ -16,6 +17,8 @@ function Navbar(){
     const [userData, setUserData] = useState(null);
     const [categoriesDropdown, setCategoriesDropdown] = useState(false);
     const [dropdown, setDropDown] = useState(false);
+    const [searchvalue,setsearchvalue]=useState("");
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem("PrimeplazaToken");
@@ -28,12 +31,49 @@ function Navbar(){
         const fetchUserInfo = async () => {
           try {
             const data = await userinfo();
+            console.log(data);
             setUserData(data.user);
             setIsLogin(true);
           } catch (error) {}
         };
         fetchUserInfo();
       }, []);
+
+      const handelcart = ()=> {
+        try {
+            if(isLogin){
+                navigate('cart');
+            }
+            else{
+                navigate('userlogin');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+      }
+
+      const handelsearchvalue = (event) => {
+        try {
+            setsearchvalue(event.target.value);
+        } catch (error) {
+            console.log(error);
+        }
+      }
+
+      const handelsearch = async (event) => {
+        try {
+            event.preventDefault();
+            const dataa = {
+                name:searchvalue
+            }
+            const data = await getproductidbyName(dataa);
+            if(data.length>0){
+                navigate(`/card/${data}`)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+      }
 
     return (
         <>
@@ -58,14 +98,14 @@ function Navbar(){
                         <li className="cursor-pointer text-txt hover:border-b-2  pr-4 transition-all duration-200">
                             Offers
                         </li>
-                        <li className="cursor-pointer text-txt hover:border-b-2 pr-4  transition-all duration-200">
+                        <Link to="/about" className="cursor-pointer text-txt hover:border-b-2 pr-4  transition-all duration-200">
                             About Us
-                        </li>
+                        </Link>
                     </ul>
                     {categoriesDropdown && (
                     <>
                         <div
-                         className="w-[60vw] h-[40vh] bg-white absolute top-20 z-20 border-t-2"
+                         className="w-[10vw] h-[17.4vh] ml-20 bg-white absolute top-20 z-20 border-t-2"
                          onMouseLeave={() => setCategoriesDropdown(false)}
                         >
                         <CategoriesDropdown />
@@ -76,18 +116,20 @@ function Navbar(){
                     </>
                     )}
                 </div>
+                <form method="post" onSubmit={handelsearch}>
                 <div className="py-2 px-2 bg-page_theam h-fit w-80 flex items-center gap-4">
                     <IoIosSearch className="w-5 h-5 text-txt" />
                     <input
                     type="search"
                     className="w-full bg-transparent outline-none text-[0.8rem] placeholder-txt_col"
-                    placeholder="Search for products,brand and more"
+                    placeholder="Search for products,brand and more" onChange={handelsearchvalue}
                     />
                 </div>
+                </form>
                 <div className="h-full flex items-center pl-10">
-                    <Link className="h-10 w-10 p-2 rounded-full mr-2 cursor-pointer hover:bg-page_theam text-txt transition-all duration-150">
-                    <MdOutlineShoppingCart size="25px"/>
-                    </Link>
+                    <div  className="h-10 w-10 p-2 rounded-full mr-2 cursor-pointer hover:bg-page_theam text-txt transition-all duration-150">
+                    <MdOutlineShoppingCart size="25px" onClick={handelcart}/>
+                    </div>
                      <div
                     className="h-10 w-36 bg-white rounded-full px-3 flex justify-between items-center cursor-pointer"
                     onClick={() => setDropDown((prev) => !prev)}>
@@ -99,7 +141,7 @@ function Navbar(){
                         <p className="roboto text-txt">/</p>
                          <Link
                         className="roboto text-log_btn  "
-                         to="/signup"
+                         to="/emailverify"
                          >
                          Sign Up
                         </Link>

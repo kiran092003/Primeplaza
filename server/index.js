@@ -4,6 +4,7 @@ const LoginRouter=require("./router/login");
 const ConnectDB = require("./db/connect");
 const body_parser=require("body-parser");
 const FashionRouter=require("./router/fashionproduct");
+const CartRouter = require("./router/cart");
 require("dotenv").config();
 
 
@@ -14,7 +15,7 @@ app.use(body_parser.json());
 app.use(cors());
 app.use("/api/v1",LoginRouter);
 app.use("/api/v1",FashionRouter);
-
+app.use("/api/v1",CartRouter);
 
 app.get("/",(req,res)=>{
     res.send("hello")

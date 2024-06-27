@@ -27,10 +27,11 @@ function Signin(){
                     password:password
                 });
                 const result = await logindata;
-                console.log(result);
                 localStorage.setItem("PrimeplazaToken", result.token);
                 localStorage.setItem("PrimeplazaId", result.userId);
-                navigate("/");
+                if(result.msg=="loged-in sucessfully"){
+                    navigate("/");
+                }
             } catch (error) {
              console.error(
                 "Login failed:",
@@ -53,7 +54,7 @@ function Signin(){
                     <img src="https://firebasestorage.googleapis.com/v0/b/primeplaza-b7db1.appspot.com/o/Logo%20maker%20project.png?alt=media&token=f97be178-05f3-4fb0-816b-a20817eb238c" alt="logo"/>
                 </div>
                 <div className="flex justify-center">   
-                <div className="flex-col justify-center items-center">
+                    <div className="flex-col justify-center items-center">
                    <h1 className="te text-5xl font-extrabold mt-14 uppercase text-center text-txt_col">PrimePlaza</h1>
                     <div className="mt-14 flex-col text-center">
                         <h1 className=" text-4xl mb-2 text-txt_col">Welcome Back!</h1>
@@ -104,7 +105,7 @@ function Signin(){
                         </p>
                         <div className="mt-3 flex justify-center">
                             <span className="mr-1 text-txt_col">Don't have an account?</span>
-                            <Link to="/" className="hover:text-log_btn text-txt_col">Sign up</Link>
+                            <Link to="/signup" className="hover:text-log_btn text-txt_col">Sign up</Link>
                         </div>
                     </div>
                    </div>
