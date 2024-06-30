@@ -1,20 +1,25 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-const authenticationMiddleware = async (req,res,next) =>{
-  const authHeader= req.headers.authorization;
-
-  if(!authHeader || !authHeader.startsWith('Bearer')){
-   return res.status(401).json({msg:"NO token provided"})
+const authenticationMiddleware = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(400).send({ msg: "No token provided" });
   }
 
-  const token =authHeader.split(' ')[1]
+  const token = authHeader.split(" ")[1];
 
   try {
-    const decoded= jwt.verify(token,process.env.JWT_SECRET)
-    next()
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = decoded;
+    req.user = { _id };
+    next();
   } catch (error) {
-    return res.status(401).json({msg:"NO authorization to access this route"}); 
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401).send({ msg: "Token expired, please login" });
+    } else {
+      res.status(404).send({ msg: "Not authorized to access this route" });
+    }
   }
-}
+};
 
-module.exports=authenticationMiddleware;
+module.exports = { authenticationMiddleware };

@@ -3,12 +3,16 @@ import { useState, useEffect } from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { deleteSingleproduct, addquantity, deleteAllproduct, userinfo, cartdetail } from "../services/api";
 import { RiDeleteBin2Line } from "react-icons/ri";
+import {useParams,useNavigate} from "react-router-dom";
+import { CgSpinnerTwoAlt } from "react-icons/cg";
 
 function Cart() {
     const [isLoading, setIsLoading] = useState(false);
     const [CartData, setCartData] = useState([]);
     const [isLogin, setIsLogin] = useState(false);
     const [userIdd, setUserId] = useState("");
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -90,6 +94,26 @@ function Cart() {
             setIsLoading(false);
         }
     };
+
+    const handelcheckout = async () => {
+        try {
+            setIsLoading(true);
+            if(CartData.length > 0){
+                navigate("/checkout")
+            }
+            else{
+                setErrorMessage("No products available");
+            }
+        } catch (error) {
+            setErrorMessage(error.response.data.msg);  
+        }
+        finally{
+            setIsLoading(false);
+            setTimeout(function(){ 
+                setErrorMessage(null);
+            },3000);
+        }
+    }
 
     let total = 0;
     CartData.map((x) => {
@@ -182,11 +206,18 @@ function Cart() {
                             <span className="text-lg">&#8377;{total + 120}</span>
                         </div>
                         <div>
-                            <button type="submit" className="w-80 ml-5 bg-log_btn mt-3 py-2 rounded-2xl text-white font-semibold mb-2">
-                                Checkout
+                            <button onClick={handelcheckout} type="submit" className="w-80 ml-5 bg-log_btn mt-3 py-2 rounded-2xl text-white font-semibold mb-2">
+                                {!isLoading ? (
+                                        "Checkout"
+                                      ) : (
+                                        <CgSpinnerTwoAlt className="text-white w-6 h-6 animate-spin ml-36" />
+                                      )}
                             </button>
                         </div>
                     </div>
+                    <p className="mt-2 text-red-500 lato text-sm text-center">
+                        {errorMessage}
+                    </p>
                 </div>
             </div>
         </>

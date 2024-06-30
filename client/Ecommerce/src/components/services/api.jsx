@@ -360,3 +360,23 @@ export const email_verification = async (email)=>{
 
 }
 
+export const place_order = async (data) => {
+  try {
+      const token = localStorage.getItem("PrimeplazaToken");
+      const config = {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.post(
+        `${API_URL}/checkoutSession`,
+        data,
+        config
+      );
+      return response.data;
+  } catch (error) {
+      console.error('Error in API call:', error);
+      throw error;
+  }
+};
+

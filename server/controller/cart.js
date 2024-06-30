@@ -1,5 +1,7 @@
 const CartSchema = require("../model/cart");
 const Checkout =require("../model/checkout");
+require("dotenv").config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
 const addCartProducts = async(req,res)=>{
@@ -90,6 +92,10 @@ const checkoutSession = async (req, res) => {
   const { FirstName, LastName, phoneNumber, Address, userId } = req.body;
 
   try {
+    if (!FirstName || !LastName || !phoneNumber || !Address || !userId) {
+      return res.status(400).json({ msg: "Missing required fields" });
+      }
+
       const userCart = await CartSchema.find({ userId: userId });
 
       if (userCart.length === 0) {
@@ -127,15 +133,32 @@ const checkoutSession = async (req, res) => {
           tax: tax,
           total: total,
       });
+      // Stripe configuration
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: userCart.map(item => {
+          return {
+            price_data: {
+              currency: "inr",
+              product_data: {
+                name: item.name,
+              },
+              unit_amount: Math.round(item.price * 100), // price in cents
+            },
+            quantity: item.quan,
+          };
+        }),
+        success_url: `http://localhost:5173/success`,
+        cancel_url: `http://localhost:5173/cancel`,
+      });
 
-      // Optionally, you can clear the user's cart after checkout
-      // await CartSchema.deleteMany({ userId: userId });
-
-      res.status(200).json(response);
+      res.status(200).json({msg:"sucessfull" ,id: session.id });
   } catch (e) {
+      console.error(e); // Log error for debugging
       res.status(500).json({ error: e.message });
   }
-}
+};
 
 
 module.exports={addCartProducts,getCartProducts,deleteSingleProduct,deleteAllProduct,updatequantity,checkoutSession};

@@ -42,10 +42,10 @@ function Navbar(){
       const handelcart = ()=> {
         try {
             if(isLogin){
-                navigate('cart');
+                navigate('/cart');
             }
             else{
-                navigate('userlogin');
+                navigate('/userlogin');
             }
         } catch (error) {
             console.log(error);

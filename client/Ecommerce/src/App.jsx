@@ -10,6 +10,9 @@ import Card from "./components/card/card";
 import Cart from "./components/card/cart";
 import About from "./components/elements/About";
 import Signup from "./components/Singup";
+import Checkout from "./components/card/checkout";
+import Sucess from "./components/card/Sucess";
+import Cancel from "./components/card/cancel";
 
 function App() {
 
@@ -26,6 +29,9 @@ function App() {
       <Route path="/cart" element={<Cart/>}/>
       <Route path="/about" element={<About/>}/>
       <Route path="/signup" element={<Signup/>}/>
+      <Route path="/checkout" element={<Checkout/>}/>
+      <Route path="/sucess" element={<Sucess/>}/>
+      <Route path="/cancel" element={<Cancel/>}/>
       </Routes>
     </>
   )
